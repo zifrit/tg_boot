@@ -1,0 +1,6 @@
+await message.reply("some text")
+бот будет отвечать пересылвае сообщение/команду
+
+await message.answer(text='some text')
+бот будет отвечать на сообщение/команду
+
