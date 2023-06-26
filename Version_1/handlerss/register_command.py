@@ -1,5 +1,7 @@
 # from Version_1.handlerss import client, list_students
-#
+from .kmn.kmn_game import *
+from .client import *
+
 # from aiogram import Dispatcher
 #
 #

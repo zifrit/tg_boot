@@ -28,38 +28,6 @@ async def start(message: Message):
     await bot.send_message(chat_id=message.chat.id, text=text)
 
 
-@dp.message_handler(commands=['kmn'])
-async def game(message: Message):
-    global play
-    play = True
-    await message.answer(text='Выберите игроков!!')
-
-
-@dp.message_handler(commands=['play'])
-async def choice(message: Message):
-    global play
-    if not play:
-        await message.answer(text='игра еще не началась')
-    await message.answer(text='игра началась')
-    await message.answer(text='выберите что ответить:\n'
-                              'к - камень\n'
-                              'н - ножницы\n'
-                              'б - бумага')
-    text = message.text
-    if text not in ['к', 'н', 'б']:
-        await message.answer(text='такого ответ нет. \n'
-                                  'нажмите /play и выберите еще раз')
-    else:
-        global players
-        players[message.from_user.id].append(text)
-
-
-
-@dp.message_handler(commands=['win'])
-async def who_win(message: Message):
-    pass
-
-
 @dp.message_handler(commands=['menu'])
 async def menu(message: Message):
     await message.answer(text='выбор', reply_markup=kb_menu)
