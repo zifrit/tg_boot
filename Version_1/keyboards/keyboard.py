@@ -5,12 +5,13 @@ kb_menu = ReplyKeyboardMarkup(
         [
             KeyboardButton(text='/start'),
             KeyboardButton(text='/some'),
+            KeyboardButton(text='/kmn'),
         ],
         [
             KeyboardButton(text='112')
         ],
         [
-            KeyboardButton(text='1'),
+            KeyboardButton(text='100'),
             KeyboardButton(text='2'),
             KeyboardButton(text='3'),
         ]
@@ -20,7 +21,7 @@ kb_menu = ReplyKeyboardMarkup(
 kb_some = ReplyKeyboardMarkup(
     keyboard=[
         [
-            KeyboardButton(text='/start'),
+            KeyboardButton(text='/menu'),
         ],
     ],
     resize_keyboard=True
