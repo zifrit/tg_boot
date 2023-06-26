@@ -10,7 +10,8 @@ bot = Bot(BOT_TOKEN, parse_mode='HTML')
 dp = Dispatcher(bot, loop=loop)
 
 if __name__ == '__main__':
-    from handlerss import register_command
-
-    register_command.register_command_from_bot(dp)
+    from Version_1.handlerss.client import *
+    # from handlerss import register_command
+    #
+    # register_command.register_command_from_bot(dp)
     executor.start_polling(dp)
