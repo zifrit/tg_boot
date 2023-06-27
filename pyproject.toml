@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "tg-boot"
+version = "0.1.0"
+description = ""
+authors = ["zifrit <zifrit@list.ru>"]
+readme = "README.md"
+packages = [{include = "tg_boot"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+aiogram = "^2.25.1"
+django = "^4.2.2"
+djangorestframework = "^3.14.0"
+python-dotenv = "^1.0.0"
+requests = "^2.31.0"
+django-filter = "^23.2"
+django-debug-toolbar = "^4.1.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
