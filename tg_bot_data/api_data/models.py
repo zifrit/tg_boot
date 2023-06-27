@@ -18,7 +18,7 @@ class TgUser(models.Model):
 class ListGames(models.Model):
     administrator = models.ForeignKey(to=TgUser, verbose_name='administrator', db_index=True, on_delete=models.CASCADE,
                                       related_name="my_games")
-    game_name = models.CharField(verbose_name='game name', max_length=255, db_index=True)
+    game_name = models.CharField(verbose_name='game name', max_length=255, db_index=True, unique=True)
     identify_game = models.IntegerField(verbose_name='id game',
                                         validators=[
                                             MaxValueValidator(10000),
