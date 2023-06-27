@@ -21,9 +21,9 @@ class ListGames(models.Model):
     game_name = models.CharField(verbose_name='game name', max_length=255, db_index=True)
     identify_game = models.IntegerField(verbose_name='id game',
                                         validators=[
-                                             MaxValueValidator(10000),
-                                             MinValueValidator(0)
-                                         ])
+                                            MaxValueValidator(10000),
+                                            MinValueValidator(0)
+                                        ])
 
     def __str__(self):
         return f'создал {self.administrator.__str__()} игру {self.game_name}'
@@ -33,7 +33,8 @@ class ListGames(models.Model):
 
 
 class GameCSP(models.Model):
-    list_games = models.OneToOneField(to=ListGames, verbose_name='connection to list', on_delete=models.CASCADE)
+    list_games = models.OneToOneField(to=ListGames, verbose_name='connection to list', on_delete=models.CASCADE,
+                                      related_name='game')
     number_players = models.IntegerField(verbose_name='number of players', default=2,
                                          validators=[
                                              MaxValueValidator(2),
