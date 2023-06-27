@@ -16,3 +16,9 @@ class ListGamesAdmin(admin.ModelAdmin):
     list_display = ['id', 'administrator', 'game_name']
     list_display_links = ['id', 'administrator']
     search_fields = ['administrator__username', 'administrator__tg_id']
+
+
+@admin.register(models.GameCSP)
+class GameCSPAdmin(admin.ModelAdmin):
+    list_display = ['id', 'in_game', 'list_games']
+    list_display_links = ['id', 'list_games']

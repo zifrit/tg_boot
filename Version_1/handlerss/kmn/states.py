@@ -2,5 +2,5 @@ from aiogram.dispatcher.filters.state import StatesGroup, State
 
 
 class Register(StatesGroup):
-    state1 = State()
+    game_name = State()
     state2 = State()

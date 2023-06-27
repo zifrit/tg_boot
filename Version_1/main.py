@@ -8,11 +8,11 @@ from Version_1.config import BOT_TOKEN
 storage = MemoryStorage()
 loop = asyncio.get_event_loop()
 bot = Bot(BOT_TOKEN, parse_mode='HTML')
-dp = Dispatcher(bot, loop=loop)
+dp = Dispatcher(bot, loop=loop, storage=storage)
 
 if __name__ == '__main__':
     # from Version_1.handlerss.client import *
     from handlerss.register_command import *
     #
     # register_command.register_command_from_bot(dp)
-    executor.start_polling(dp)
+    executor.start_polling(dp, skip_updates=True)

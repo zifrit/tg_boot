@@ -8,4 +8,5 @@ router.register(r'list_games', views.ListGameViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
+    path('start_kmn/', views.Test.as_view())
 ]

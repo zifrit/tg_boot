@@ -5,7 +5,7 @@ from django.db import models
 # Create your models here.
 
 class TgUser(models.Model):
-    tg_id = models.IntegerField(verbose_name='id in telegram', db_index=True)
+    tg_id = models.IntegerField(verbose_name='id in telegram', db_index=True, unique=True)
     username = models.CharField(verbose_name='username in telegram', max_length=255, db_index=True)
 
     def __str__(self):
@@ -23,7 +23,7 @@ class ListGames(models.Model):
                                         validators=[
                                             MaxValueValidator(10000),
                                             MinValueValidator(0)
-                                        ], blank=True)
+                                        ], default=0)
 
     def __str__(self):
         return f'создал {self.administrator.__str__()} игру {self.game_name}'
