@@ -23,7 +23,7 @@ class ListGames(models.Model):
                                         validators=[
                                             MaxValueValidator(10000),
                                             MinValueValidator(0)
-                                        ])
+                                        ], blank=True)
 
     def __str__(self):
         return f'создал {self.administrator.__str__()} игру {self.game_name}'
