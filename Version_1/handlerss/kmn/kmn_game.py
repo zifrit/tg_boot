@@ -63,7 +63,7 @@ async def join_game(message: Message, state: FSMContext):
         await state.finish()
     elif response.json()['message'] == 'Вы присоединились к комнате':
         await message.reply(text=response.json()['message'])
-        await message.answer(text='Выберите один из вариантов: \n'
+        await message.answer(text='Выберите один из вариантов ответа: \n'
                                   'к - камень\n'
                                   'н - ножницы\n'
                                   'б - бумага\n')
@@ -95,23 +95,35 @@ async def join_game(message: Message, state: FSMContext):
         await message.answer(text='Присоединитесь заново /join_game')
         await state.finish()
 
-    # global play
-    # if not play:
-    #     await message.answer(text='игра еще не началась')
-    # await message.answer(text='игра началась')
-    # await message.answer(text='выберите что ответить:\n'
-    #                           'к - камень\n'
-    #                           'н - ножницы\n'
-    #                           'б - бумага')
-    # text = message.text
-    # if text not in ['к', 'н', 'б']:
-    #     await message.answer(text='такого ответ нет. \n'
-    #                               'нажмите /play и выберите еще раз')
-    # else:
-    #     global players
-    #     players[message.from_user.id].append(text)
+
+@dp.message_handler(commands=['end_game'])
+async def choice_room(message: Message):
+    await message.answer(text='Введите название комнаты.\n')
+    await Register.end_game.set()
 
 
-@dp.message_handler(commands=['win'])
-async def who_win(message: Message):
-    pass
+@dp.message_handler(state=Register.end_game)
+async def end_game(message: Message, state: FSMContext):
+    answer = message.text
+    await state.update_data(end_game=answer)
+    st = await state.get_data('end_game')
+    requests_tg = {
+        'user': message.from_user.id,
+        'room_name': st['end_game']
+    }
+    response = requests.post(f'{BASE_URL}/end_game_kmn/', json=requests_tg)
+    if response.json()['status'] == 'D':
+        for otvet in response.json()['message']:
+            await bot.send_message(chat_id=otvet[0], text=f'Игра окончилась. \n'
+                                                          f'В комнате {st["end_game"]} у вас {otvet[1]}')
+        await state.finish()
+    elif response.json()['status']:
+        for otvet in response.json()['message']:
+            await bot.send_message(chat_id=otvet[0], text=f'Игра окончилась. \n'
+                                                          f'В комнате {st["end_game"]} вы {otvet[1]}')
+        await state.finish()
+    else:
+        await message.reply(text=response.json()['message'])
+        await state.finish()
+
+    requests.delete(f'{BASE_URL}/list_games/{response.json()["room_id"]}')

@@ -11,4 +11,5 @@ urlpatterns = [
     path('start_kmn/', views.CreateGameRoom.as_view()),
     path('join_kmn/', views.JoinInRoom.as_view()),
     path('answer_kmn/', views.AnswerKMN.as_view()),
+    path('end_game_kmn/', views.EndGameKMN.as_view())
 ]
