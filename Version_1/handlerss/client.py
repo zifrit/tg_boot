@@ -20,12 +20,12 @@ def who_win(players: dict):
 @dp.message_handler(commands=['start'])
 async def start(message: Message):
     text = f'Добро пожаловать {message.from_user.full_name}'
-    print(message.text)
     user = {
         'tg_id': message.from_user.id,
-        'username': message.from_user.username,
+        'username': 'NoneUsername' if message.from_user.username == None else message.from_user.username,
     }
     requests.post(f"{BASE_URL}/tg/", json=user)
+    print(user)
     await bot.send_message(chat_id=message.chat.id, text=text)
 
 

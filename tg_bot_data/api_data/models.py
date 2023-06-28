@@ -6,7 +6,7 @@ from django.db import models
 
 class TgUser(models.Model):
     tg_id = models.IntegerField(verbose_name='id in telegram', db_index=True, unique=True)
-    username = models.CharField(verbose_name='username in telegram', max_length=255, db_index=True)
+    username = models.CharField(verbose_name='username in telegram', max_length=255, db_index=True, blank=True)
 
     def __str__(self):
         return str(self.tg_id)
