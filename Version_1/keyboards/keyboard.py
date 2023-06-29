@@ -30,9 +30,9 @@ kb_some = ReplyKeyboardMarkup(
 kb_list_game = ReplyKeyboardMarkup(
     keyboard=[
         [
-            KeyboardButton(text='/start_game'),
+            KeyboardButton(text='/list_game'),
             KeyboardButton(text='/join_game'),
-            KeyboardButton(text='/end_game'),
+            KeyboardButton(text='/start_game'),
         ],
     ],
     resize_keyboard=True

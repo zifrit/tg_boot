@@ -78,7 +78,7 @@ class JoinInRoom(ActionInRoom):
             elif room.in_game < 2:
                 return Response({
                     "status": True,
-                    'message': 'Вы присоединились к комнате'
+                    'message': 'Вы присоединились к комнате',
                 })
         else:
             return Response({
@@ -96,7 +96,14 @@ class JoinInRoom(ActionInRoom):
             room.save()
             return Response({
                 "status": True,
-                'message': 'Ваш ответ принят'
+                'message': 'Ваш ответ принят',
+                'notification': [
+                    [int(list(room.players.keys())[0]),
+                     f'К комнате {room.list_games.game_name} присоединился человек \n '
+                     f'Комната заполнена, можно начинать игру \n /start_game'],
+                    [int(list(room.players.keys())[1]), f'Комната {room.list_games.game_name} '
+                                                        f'заполнена, игра скоро начнется']
+                ]
             })
         else:
             return Response({

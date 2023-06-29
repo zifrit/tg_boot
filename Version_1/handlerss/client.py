@@ -44,7 +44,7 @@ async def start_game(message: Message):
     await message.answer(text='кнопки изменены', reply_markup=keyboard.kb_list_game)
 
 
-@dp.message_handler(commands=['start_game'])
+@dp.message_handler(commands=['list_game'])
 async def start_game(message: Message):
     await message.answer(text='Список игр:\n'
                               '/kmn камень ножницы бумага')

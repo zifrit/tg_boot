@@ -95,13 +95,16 @@ async def join_game(message: Message, state: FSMContext):
     if response.json()['status']:
         await message.reply(text=response.json()['message'])
         await state.finish()
+        for otvet in response.json()['notification']:
+            await bot.send_message(chat_id=otvet[0], text=otvet[1])
+
     else:
         await message.reply(text=response.json()['message'])
         await message.answer(text='Присоединитесь заново /join_game')
         await state.finish()
 
 
-@dp.message_handler(commands=['end_game'])
+@dp.message_handler(commands=['start_game'])
 async def choice_room(message: Message):
     await message.answer(text='Введите название комнаты.\n')
     await Register.end_game.set()
@@ -121,14 +124,16 @@ async def end_game(message: Message, state: FSMContext):
         for otvet in response.json()['message']:
             await bot.send_message(chat_id=otvet[0], text=f'Игра окончилась. \n'
                                                           f'В комнате {st["end_game"]} у вас {otvet[1]}')
+        requests.delete(f'{BASE_URL}/list_games/{response.json()["room_id"]}')
         await state.finish()
     elif response.json()['status']:
         for otvet in response.json()['message']:
             await bot.send_message(chat_id=otvet[0], text=f'Игра окончилась. \n'
                                                           f'В комнате {st["end_game"]} вы {otvet[1]}')
+        requests.delete(f'{BASE_URL}/list_games/{response.json()["room_id"]}')
         await state.finish()
     else:
         await message.reply(text=response.json()['message'])
         await state.finish()
 
-    requests.delete(f'{BASE_URL}/list_games/{response.json()["room_id"]}')
+
