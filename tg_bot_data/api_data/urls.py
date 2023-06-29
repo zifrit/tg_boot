@@ -8,8 +8,7 @@ router.register(r'list_games', views.ListGameViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('start_kmn/', views.CreateGameRoom.as_view()),
-    path('join_kmn/', views.JoinInRoom.as_view()),
-    path('answer_kmn/', views.AnswerKMN.as_view()),
-    path('end_game_kmn/', views.EndGameKMN.as_view())
+    path('start/', views.CreateGameRoom.as_view()),
+    path('search_join/', views.JoinInRoom.as_view()),
+    path('end_game/', views.EndGameKMN.as_view())
 ]

@@ -20,7 +20,7 @@ from django.urls import path, include
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path('', include('api_data.urls'))
+    path('kmn/', include('api_data.urls'))
 ]
 
 if settings.DEBUG:

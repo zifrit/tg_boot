@@ -56,27 +56,26 @@ class ActionInRoom(APIView):
     def get_data(self, request):
         data = request.data
         user = models.TgUser.objects.get(tg_id=data['user'])
-        room = models.GameCSP.objects.filter(list_games__game_name=data['room_name'])
+        room = models.GameCSP.objects.get(list_games__game_name=data['room_name'])
         return user, room
 
 
 class JoinInRoom(ActionInRoom):
-    def post(self, request):
+
+    def get(self, request):
         user, room = self.get_data(request)
         if room:
-            if str(user.tg_id) in list(room[0].players.keys()):
+            if str(user.tg_id) in list(room.players.keys()):
                 return Response({
                     "status": True,
                     'message': 'Вы уже в комнате'
                 })
-            elif room[0].in_game >= 2:
+            elif room.in_game >= 2:
                 return Response({
                     "status": False,
-                    'message': 'Количество участников превышено'
+                    'message': 'Комната уже заполнена'
                 })
-            else:
-                room[0].in_game += 1
-                room[0].save()
+            elif room.in_game < 2:
                 return Response({
                     "status": True,
                     'message': 'Вы присоединились к комнате'
@@ -84,20 +83,16 @@ class JoinInRoom(ActionInRoom):
         else:
             return Response({
                 "status": False,
-                'message': 'Такой комнаты нету'
+                'message': 'Комнаты с таким именем не существует'
             })
 
-
-class AnswerKMN(ActionInRoom):
     def post(self, request):
         data = request.data
         user, room = self.get_data(request)
-        if data['answer'] in ['к', 'н', 'б']:
-            room = models.GameCSP.objects.get(list_games__game_name=data['room_name'])
-            a = room.players
-            print(user.tg_id)
-            print(type(user.tg_id))
-            a[str(user.tg_id)] = data['answer']
+        if data['answer'].lower() in ['к', 'н', 'б']:
+            room.in_game += 1
+            players = room.players
+            players[str(user.tg_id)] = data['answer'].lower()
             room.save()
             return Response({
                 "status": True,
@@ -106,7 +101,7 @@ class AnswerKMN(ActionInRoom):
         else:
             return Response({
                 "status": False,
-                'message': 'Неверный ответ'
+                'message': 'Такова варианта ответа нет'
             })
 
 
@@ -114,39 +109,37 @@ class EndGameKMN(ActionInRoom):
     def post(self, request):
         user, room = self.get_data(request)
         if room:
-            if user.tg_id == room[0].list_games.administrator.tg_id:
-                answer_1 = room[0].players[list(room[0].players.keys())[0]]
-                answer_2 = room[0].players[list(room[0].players.keys())[1]]
-                print(answer_1)
-                print(answer_2)
+            if user.tg_id == room.list_games.administrator.tg_id:
+                answer_1 = room.players[list(room.players.keys())[0]]
+                answer_2 = room.players[list(room.players.keys())[1]]
                 if (answer_1 == 'к' and answer_2 == 'н') or (answer_1 == 'н' and answer_2 == 'б') or (
                         answer_1 == 'б' and answer_2 == 'к'):
                     return Response({
                         "status": True,
                         'message': [
-                            [int(list(room[0].players.keys())[0]), 'Выиграл'],
-                            [int(list(room[0].players.keys())[1]), 'Проиграл']
+                            [int(list(room.players.keys())[0]), 'Выиграл'],
+                            [int(list(room.players.keys())[1]), 'Проиграл']
                         ],
-                        'room_id': room[0].list_games.pk
+                        'room_id': room.list_games.pk
                     })
                 elif (answer_2 == 'к' and answer_1 == 'н') or (answer_2 == 'н' and answer_1 == 'б') or (
                         answer_2 == 'б' and answer_1 == 'к'):
                     return Response({
                         "status": True,
                         'message': [
-                            [int(list(room[0].players.keys())[0]), 'Проиграл'],
-                            [int(list(room[0].players.keys())[1]), 'Выиграл']
+                            [int(list(room.players.keys())[0]), 'Проиграл'],
+                            [int(list(room.players.keys())[1]), 'Выиграл']
                         ],
-                        'room_id': room[0].list_games.pk
+                        'room_id': room.list_games.pk
                     })
                 elif answer_1 == answer_2:
                     return Response({
                         "status": 'D',
                         'message': [
-                            [int(list(room[0].players.keys())[0]), 'Ничья'],
-                            [int(list(room[0].players.keys())[1]), 'Ничья']
+                            [int(list(room.players.keys())[0]), 'Ничья'],
+                            [int(list(room.players.keys())[1]), 'Ничья']
                         ],
-                        'room_id': room[0].list_games.pk
+                        'room_id': room.list_games.pk
                     })
                 else:
                     return Response({
@@ -158,3 +151,8 @@ class EndGameKMN(ActionInRoom):
                     "status": False,
                     'message': 'Вы не можете закончить игру'
                 })
+        else:
+            return Response({
+                "status": False,
+                'message': 'Такой комнаты нету'
+            })
