@@ -31,17 +31,17 @@ async def start(message: Message):
 
 @dp.message_handler(commands=['menu'])
 async def menu(message: Message):
-    await message.answer(text='выбор', reply_markup=kb_menu)
+    await message.answer(text='Кнопки изменены', reply_markup=kb_menu)
 
 
 @dp.message_handler(commands=['some'])
 async def somecommand(message: Message):
-    await message.answer(text='выбор', reply_markup=keyboard.kb_list_game)
+    await message.answer(text='Кнопки изменены', reply_markup=keyboard.kb_list_game)
 
 
 @dp.message_handler(commands=['games'])
 async def start_game(message: Message):
-    await message.answer(text='кнопки изменены', reply_markup=keyboard.kb_list_game)
+    await message.answer(text='Кнопки изменены', reply_markup=keyboard.kb_list_game)
 
 
 @dp.message_handler(commands=['list_game'])

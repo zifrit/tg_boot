@@ -1,5 +1,7 @@
 from django.db import IntegrityError
 from django.shortcuts import render
+from rest_framework.decorators import action
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -20,9 +22,15 @@ class TgUserViewSet(viewsets.ModelViewSet):
     ]
 
 
+class ListGameViewSetPagination(PageNumberPagination):
+    page_size = 5
+    page_size_query_param = 'size'
+
+
 class ListGameViewSet(viewsets.ModelViewSet):
     queryset = models.ListGames.objects.select_related('administrator')
     serializer_class = serializers.ListGamesSerializer
+    pagination_class = ListGameViewSetPagination
     filterset_fields = [
         'administrator',
         'game_name',

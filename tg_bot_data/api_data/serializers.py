@@ -9,9 +9,10 @@ class TgUserSerializer(serializers.ModelSerializer):
 
 
 class ListGamesSerializer(serializers.ModelSerializer):
+    administrator = serializers.CharField(source='administrator.username')
     class Meta:
         model = models.ListGames
-        fields = '__all__'
+        fields = ['game_name', 'administrator']
 
 
 class GameCSPSerializer(serializers.ModelSerializer):

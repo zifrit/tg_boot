@@ -4,16 +4,7 @@ kb_menu = ReplyKeyboardMarkup(
     keyboard=[
         [
             KeyboardButton(text='/start'),
-            KeyboardButton(text='/some'),
-            KeyboardButton(text='/kmn'),
-        ],
-        [
-            KeyboardButton(text='112')
-        ],
-        [
             KeyboardButton(text='/games'),
-            KeyboardButton(text='2'),
-            KeyboardButton(text='3'),
         ]
     ],
     resize_keyboard=True
@@ -30,10 +21,16 @@ kb_some = ReplyKeyboardMarkup(
 kb_list_game = ReplyKeyboardMarkup(
     keyboard=[
         [
-            KeyboardButton(text='/list_game'),
-            KeyboardButton(text='/join_game'),
-            KeyboardButton(text='/start_game'),
+            KeyboardButton(text='/list_kmn'),
+            KeyboardButton(text='/start_kmn'),
+            KeyboardButton(text='/join_kmn'),
+            KeyboardButton(text='/end_kmn'),
         ],
+        [
+            KeyboardButton(text='/back'),
+            KeyboardButton(text='/manual_kmn'),
+        ]
+
     ],
     resize_keyboard=True
 )

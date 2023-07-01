@@ -1,6 +1,7 @@
 from Version_1.main import dp, bot
 from aiogram.dispatcher import FSMContext
-from aiogram.types import Message
+from aiogram.types import Message, CallbackQuery
+from Version_1.keyboards import keyboard
 from .states import Register
 import requests
 
@@ -10,7 +11,7 @@ play = False
 BASE_URL = 'http://127.0.0.1:8000/kmn'
 
 
-@dp.message_handler(commands=['kmn'])
+@dp.message_handler(commands=['start_kmn'])
 async def game(message: Message):
     await message.answer(text='Придумайте название комнаты.\n'
                               'И Один из вариантов ответа:\n'
@@ -18,7 +19,8 @@ async def game(message: Message):
                               'н - ножницы\n'
                               'б - бумага\n'
                               'Шаблон: \n "название комнаты" "выбранный вами ответ"\n'
-                              'Примечание: название комнаты должно быть одним словом')
+                              'Пример: \n черная-комната к\n'
+                              'Примечание: название комнаты должно быть одним словом\n')
     await Register.game_name.set()
 
 
@@ -46,7 +48,7 @@ async def name_game(message: Message, state: FSMContext):
             await state.finish()
 
 
-@dp.message_handler(commands=['join_game'])
+@dp.message_handler(commands=['join_kmn'])
 async def choice_room(message: Message):
     await message.answer(text='Введите название комнаты.\n')
     await Register.join_in_game.set()
@@ -104,7 +106,7 @@ async def join_game(message: Message, state: FSMContext):
         await state.finish()
 
 
-@dp.message_handler(commands=['start_game'])
+@dp.message_handler(commands=['end_kmn'])
 async def choice_room(message: Message):
     await message.answer(text='Введите название комнаты.\n')
     await Register.end_game.set()
@@ -137,3 +139,30 @@ async def end_game(message: Message, state: FSMContext):
         await state.finish()
 
 
+@dp.message_handler(commands=['list_kmn'])
+async def back(message: Message):
+    response = requests.get(f'{BASE_URL}/games/')
+    list_games = '\n'.join(
+        [f'{game["administrator"]} создал {game["game_name"]} ' for game in response.json()['results']])
+    await message.answer(text=f'<b>Список созданных комнат:</b> \n{list_games}')
+
+
+@dp.message_handler(commands=['back'])
+async def back(message: Message):
+    await message.answer(text='кнопки изменены', reply_markup=keyboard.kb_menu)
+
+
+@dp.message_handler(commands=['manual_kmn'])
+async def back(message: Message):
+    await message.answer(text='Правила: \n'
+                              'Игру может закончить только тот кто его создал. \n'
+                              'Ограничение количество игроков в комнате: 2. \n'
+                              '\n\n\n'
+                              '<b> 🕹 Команды бота: </b>\n'
+                              '👉 /start_kmn - запуская создание комнаты где будет проходить игра \n'
+                              '👉 /join_kmn - присоединение к комнате \n'
+                              '👉 /end_kmn -  завершить игру в комнате \n'
+                              '👉 /list_kmn - список существующих комнат с игрой \n'
+                              '\n\n\n'
+                              'Как игра в "камень ножницы бумага"  на примере :)\n'
+                              '<b>игрок_1</b> и <b>игрок_2</b> \n игрок_1 начинает игру ')
