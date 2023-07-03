@@ -1,5 +1,7 @@
 import random
 
+from aiogram import types
+
 from Version_1.main import dp, bot
 from aiogram.types import Message, CallbackQuery
 from Version_1.keyboards.keyboard import kb_menu, kb_some
@@ -17,6 +19,23 @@ def who_win(players: dict):
     pass
 
 
+create_days_keyboard = types.InlineKeyboardMarkup(row_width=2)
+create_days_keyboard.add(types.InlineKeyboardButton(text='Понедельник', callback_data='monday'),
+                         types.InlineKeyboardButton(text='Вторник', callback_data='tuesday'),
+                         types.InlineKeyboardButton(text='Среда', callback_data='wednesday'),
+                         types.InlineKeyboardButton(text='Четверг', callback_data='thursday'),
+                         types.InlineKeyboardButton(text='Пятница', callback_data='friday'),
+                         types.InlineKeyboardButton(text='Суббота', callback_data='saturday'),
+                         types.InlineKeyboardButton(text='Воскресенье', callback_data='sunday'))
+
+# создаем клавиатуру для выбора действий
+# async def create_day_actions_keyboard():
+create_day_actions_keyboard = types.InlineKeyboardMarkup(row_width=2)
+create_day_actions_keyboard.add(types.InlineKeyboardButton(text='Добавить задание', callback_data='add_task'),
+                                types.InlineKeyboardButton(text='Удалить задание', callback_data='delete_task'),
+                                types.InlineKeyboardButton(text='Назад', callback_data='back'))
+
+
 @dp.message_handler(commands=['start'])
 async def start(message: Message):
     text = f'Добро пожаловать {message.from_user.full_name}'
@@ -25,8 +44,9 @@ async def start(message: Message):
         'username': 'NoneUsername' if message.from_user.username == None else message.from_user.username,
     }
     requests.post(f"{BASE_URL}/tg/", json=user)
-    print(user)
-    await bot.send_message(chat_id=message.chat.id, text=text)
+    await bot.send_message(chat_id=message.chat.id, text=text, reply_markup=create_days_keyboard)
+    await message.delete()
+    await message.delete()
 
 
 @dp.message_handler(commands=['menu'])
@@ -50,6 +70,7 @@ async def start_game(message: Message):
                               '/kmn камень ножницы бумага')
     # await message.delete()
 
+
 # @dp.message_handler()
 # async def commands(message: Message):
 #     if play:
@@ -71,3 +92,35 @@ async def start_game(message: Message):
 # #             .intersection(set(json.load(open('json файл')))) != set():
 # #         await message.reply('маты запрещены')
 # #         await message.delete()
+
+
+# создаем клавиатуру для выбора дня недели
+
+
+# обработчик старта диалога
+@dp.message_handler(commands=['startt'])
+async def start_message_handler(message):
+    await bot.send_message(chat_id=message.chat.id, text='Выберите день недели', reply_markup=create_days_keyboard)
+
+
+# обработчик нажатия кнопок выбора дня недели
+@dp.callback_query_handler(
+    lambda call: call.data in ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'])
+async def day_callback_handler(call):
+    await bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,
+                                text=f'Выбран {call.data}',
+                                reply_markup=create_day_actions_keyboard)
+
+
+# обработчик нажатия кнопки Назад
+@dp.callback_query_handler(lambda call: call.data == 'back')
+async def back_callback_handler(call):
+    await bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,
+                                text='Выберите день недели',
+                                reply_markup=create_days_keyboard)
+
+
+# обработчик текстовых сообщений
+@dp.message_handler(content_types=['text'])
+async def text_message_handler(message):
+    await bot.send_message(chat_id=message.chat.id, text='Выберите день недели', reply_markup=create_days_keyboard)
