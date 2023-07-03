@@ -1,9 +1,11 @@
+import requests
+
+from Version_1.keyboards import inlinekeyboard
 from Version_1.main import dp, bot
 from aiogram.dispatcher import FSMContext
 from aiogram.types import Message, CallbackQuery
 from Version_1.keyboards import keyboard
 from .states import Register
-import requests
 
 users = {}
 players = {}
@@ -142,9 +144,33 @@ async def end_game(message: Message, state: FSMContext):
 @dp.message_handler(commands=['list_kmn'])
 async def back(message: Message):
     response = requests.get(f'{BASE_URL}/games/')
-    list_games = '\n'.join(
-        [f'{game["administrator"]} создал {game["game_name"]} ' for game in response.json()['results']])
-    await message.answer(text=f'<b>Список созданных комнат:</b> \n{list_games}')
+    if response.json()['count'] > 2:
+        list_games = '\n'.join(
+            [f'{game["administrator"]} создал {game["game_name"]} ' for game in response.json()['results']])
+        await message.answer(text=f'<b>Список созданных комнат:</b> \n{list_games}',
+                             reply_markup=inlinekeyboard.list_exist_game)
+    else:
+        list_games = '\n'.join(
+            [f'{game["administrator"]} создал {game["game_name"]} ' for game in response.json()['results']])
+        await message.answer(text=f'<b>Список созданных комнат:</b> \n{list_games}')
+
+
+@dp.callback_query_handler(
+    lambda call: call.data == 'previous')
+async def previous_list(call: CallbackQuery):
+    await bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,
+                                text=f'Выбран aaadas',
+                                reply_markup=inlinekeyboard.list_exist_game)
+    # await call.message.edit_reply_markup(reply_markup=)
+
+
+@dp.callback_query_handler(
+    lambda call: call.data == 'next')
+async def next_list(call: CallbackQuery):
+    await bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,
+                                text=f'Выбран 4tergf',
+                                reply_markup=inlinekeyboard.list_exist_game)
+    await call.answer()
 
 
 @dp.message_handler(commands=['back'])

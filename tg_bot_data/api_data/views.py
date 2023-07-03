@@ -23,7 +23,7 @@ class TgUserViewSet(viewsets.ModelViewSet):
 
 
 class ListGameViewSetPagination(PageNumberPagination):
-    page_size = 5
+    page_size = 6
     page_size_query_param = 'size'
 
 
@@ -108,7 +108,7 @@ class JoinInRoom(ActionInRoom):
                 'notification': [
                     [int(list(room.players.keys())[0]),
                      f'К комнате {room.list_games.game_name} присоединился человек \n '
-                     f'Комната заполнена, можно начинать игру \n /start_game'],
+                     f'Комната заполнена, можно начинать игру \n /end_kmn'],
                     [int(list(room.players.keys())[1]), f'Комната {room.list_games.game_name} '
                                                         f'заполнена, игра скоро начнется']
                 ]
