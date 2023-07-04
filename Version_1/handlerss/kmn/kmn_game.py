@@ -1,3 +1,5 @@
+import random
+
 import requests
 
 from Version_1.keyboards import inlinekeyboard
@@ -141,41 +143,68 @@ async def end_game(message: Message, state: FSMContext):
         await state.finish()
 
 
+previous_page: str = ''
+next_page: str = ''
+
+
+async def get_page_data(action: str):
+    global previous_page, next_page
+    if action == 'previous':
+        response = requests.get(previous_page).json()
+        list_games = '\n'.join(
+            [
+                f'{number}) {game["administrator"]} создал комнату {game["game_name"]} ' for number, game in
+                enumerate(response['results'], 1)
+            ])
+        next_page = response['next'] if response['next'] else ''
+        previous_page = response['previous'] if response['previous'] else ''
+        return list_games, inlinekeyboard.list_exist_game if response['previous'] else inlinekeyboard.next_game
+    elif action == 'next':
+        response = requests.get(next_page).json()
+        list_games = '\n'.join(
+            [
+                f'{number}) {game["administrator"]} создал комнату {game["game_name"]} ' for number, game in
+                enumerate(response['results'], 1)
+            ])
+        next_page = response['next'] if response['next'] else ''
+        previous_page = response['previous'] if response['previous'] else ''
+        return list_games, inlinekeyboard.list_exist_game if response['next'] else inlinekeyboard.previous_game
+
+
 @dp.message_handler(commands=['list_kmn'])
 async def back(message: Message):
-    response = requests.get(f'{BASE_URL}/games/')
-    if response.json()['count'] > 2:
+    response = requests.get(f'{BASE_URL}/games/').json()
+    if response['count'] > 4:
+        global next_page
+        next_page = response['next']
+        print(next_page)
         list_games = '\n'.join(
-            [f'{game["administrator"]} создал {game["game_name"]} ' for game in response.json()['results']])
+            [
+                f'{number}) {game["administrator"]} создал комнату {game["game_name"]} ' for number, game in
+                enumerate(response['results'], 1)
+            ])
         await message.answer(text=f'<b>Список созданных комнат:</b> \n{list_games}',
-                             reply_markup=inlinekeyboard.list_exist_game)
+                             reply_markup=inlinekeyboard.next_game)
     else:
         list_games = '\n'.join(
-            [f'{game["administrator"]} создал {game["game_name"]} ' for game in response.json()['results']])
+            [
+                f'{number}) {game["administrator"]} создал комнату {game["game_name"]} ' for number, game in
+                enumerate(response['results'], 1)
+            ])
         await message.answer(text=f'<b>Список созданных комнат:</b> \n{list_games}')
 
 
-@dp.callback_query_handler(
-    lambda call: call.data == 'previous')
+@dp.callback_query_handler(lambda call: call.data in ['previous', 'next'])
 async def previous_list(call: CallbackQuery):
+    list_games, inline = await get_page_data(call.data)
     await bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,
-                                text=f'Выбран aaadas',
-                                reply_markup=inlinekeyboard.list_exist_game)
-    # await call.message.edit_reply_markup(reply_markup=)
-
-
-@dp.callback_query_handler(
-    lambda call: call.data == 'next')
-async def next_list(call: CallbackQuery):
-    await bot.edit_message_text(chat_id=call.message.chat.id, message_id=call.message.message_id,
-                                text=f'Выбран 4tergf',
-                                reply_markup=inlinekeyboard.list_exist_game)
-    await call.answer()
+                                text=f'✍️<b>Список созданных комнат:</b> \n {list_games}',
+                                reply_markup=inline)
 
 
 @dp.message_handler(commands=['back'])
 async def back(message: Message):
-    await message.answer(text='кнопки изменены', reply_markup=keyboard.kb_menu)
+    await message.answer(text='🔄', reply_markup=keyboard.kb_menu)
 
 
 @dp.message_handler(commands=['manual_kmn'])

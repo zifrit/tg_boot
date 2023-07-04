@@ -23,7 +23,7 @@ class TgUserViewSet(viewsets.ModelViewSet):
 
 
 class ListGameViewSetPagination(PageNumberPagination):
-    page_size = 6
+    page_size = 4
     page_size_query_param = 'size'
 
 
