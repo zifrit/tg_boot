@@ -107,6 +107,7 @@ class JoinInRoom(ActionInRoom):
                 'message': 'Ваш ответ принят',
                 'notification': [
                     [int(list(room.players.keys())[0]),
+
                      f'К комнате {room.list_games.game_name} присоединился человек \n '
                      f'Комната заполнена, можно начинать игру \n /end_kmn'],
                     [int(list(room.players.keys())[1]), f'Комната {room.list_games.game_name} '
