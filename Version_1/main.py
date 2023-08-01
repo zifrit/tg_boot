@@ -3,7 +3,7 @@ from aiogram import Bot
 from aiogram.dispatcher import Dispatcher
 from aiogram.utils import executor
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
-from Version_1.config import BOT_TOKEN
+from config import BOT_TOKEN
 
 storage = MemoryStorage()
 loop = asyncio.get_event_loop()

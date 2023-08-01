@@ -15,8 +15,6 @@ services:
       "
     volumes:
       - ./tg_bot_data:/am
-    ports:
-      - "8000:8000"
     env_file:
       - ./tg_bot_data/.env
     depends_on:
@@ -36,7 +34,9 @@ services:
       - ./Version_1/.env
     depends_on:
       - dj_app
-
+    links:
+      - dj_app
+      - nginx
 
   db:
     image: postgres:15-alpine
