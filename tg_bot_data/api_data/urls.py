@@ -5,7 +5,7 @@ from rest_framework import routers
 router = routers.SimpleRouter()
 router.register(r'tg', views.TgUserViewSet)
 router.register(r'games', views.ListGameViewSet)
-print(router.urls)
+# print(router.urls)
 
 urlpatterns = [
     path('', include(router.urls)),

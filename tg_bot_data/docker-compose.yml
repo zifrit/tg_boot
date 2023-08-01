@@ -3,9 +3,9 @@ version: "3.9"
 services:
   dj_app:
     build:
-      context: ./tg_bot_data
+#      context: ./tg_bot_data
       dockerfile: Dockerfile
-    container_name: tg_bot_dj
+    container_name: test_tg_bot_dj
     command: bash -c "
       python manage.py makemigrations &&
       python manage.py migrate &&
@@ -14,33 +14,16 @@ services:
       gunicorn tg_bot_data.wsgi:application --bind 0.0.0.0:8000
       "
     volumes:
-      - ./tg_bot_data:/am
+      - .:/am
     ports:
       - "8000:8000"
     env_file:
-      - ./tg_bot_data/.env
+      - .env
     depends_on:
       - db
-
-  tg_bot:
-    build:
-      context: ./Version_1
-      dockerfile: Dockerfile
-    container_name: tg_bot
-    command: bash -c "
-      python main.py
-      "
-    volumes:
-      - ./Version_1:/am
-    env_file:
-      - ./Version_1/.env
-    depends_on:
-      - dj_app
-
-
   db:
     image: postgres:15-alpine
-    container_name: tg_bot_base
+    container_name: test_tg_bot_base
     restart: unless-stopped
     volumes:
       - postgres_data:/var/lib/postgresql/data/
@@ -51,11 +34,11 @@ services:
     expose:
       - 5432
     env_file:
-      - ./tg_bot_data/.env
+      - .env
 
   nginx:
     build: nginx
-    container_name: tg_bot_nginx
+    container_name: test_tg_bot_nginx
     ports:
       - "80:80"
     depends_on:

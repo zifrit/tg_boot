@@ -12,7 +12,8 @@ from .states import Register
 users = {}
 players = {}
 play = False
-BASE_URL = 'http://127.0.0.1:8000/kmn'
+# BASE_URL = 'http://127.0.0.1:8000/kmn' #без докера
+BASE_URL = 'http://dj_app:8000/kmn' #с докером
 
 
 @dp.message_handler(commands=['start_kmn'])
