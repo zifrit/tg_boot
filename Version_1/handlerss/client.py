@@ -1,17 +1,16 @@
 import random
 
-from Version_1.keyboards.inlinekeyboard import create_day_actions_keyboard, create_days_keyboard, list_exist_game
-from Version_1.main import dp, bot
+from main import dp, bot
 from aiogram.types import Message, CallbackQuery
-from Version_1.keyboards.keyboard import kb_menu, kb_some
-from Version_1.keyboards import keyboard
+from keyboards.keyboard import kb_menu, kb_some
+from keyboards import keyboard
+from config import BASE_URL
+
 import requests
 
 users = {}
 players = {}
 play = False
-
-BASE_URL = 'http://127.0.0.1:8000/kmn/'
 
 
 def who_win(players: dict):
@@ -49,7 +48,6 @@ async def start_game(message: Message):
     await message.answer(text='Список игр:\n'
                               '/kmn камень ножницы бумага')
     # await message.delete()
-
 
 # @dp.message_handler()
 # async def commands(message: Message):
