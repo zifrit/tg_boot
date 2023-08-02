@@ -1,28 +1,46 @@
 version: "3.9"
 
 services:
-  app:
+  dj_app:
     build:
-      dockerfile: ./dockerfile
-    container_name: nko
+      context: ./tg_bot_data
+      dockerfile: Dockerfile
+    container_name: tg_bot_dj
     command: bash -c "
       python manage.py makemigrations &&
       python manage.py migrate &&
       python manage.py create_superuser &&
       python manage.py collectstatic --noinput &&
-      gunicorn NKO.wsgi:application --bind 0.0.0.0:8000
+      gunicorn tg_bot_data.wsgi:application --bind 0.0.0.0:8000
       "
     volumes:
-      - .:/am
-    ports:
-      - "8000:8000"
+      - ./tg_bot_data:/am
     env_file:
-      - .env
+      - ./tg_bot_data/.env
     depends_on:
       - db
+
+  tg_bot:
+    build:
+      context: ./Version_1
+      dockerfile: Dockerfile
+    container_name: tg_bot
+    command: bash -c "
+      python main.py
+      "
+    volumes:
+      - ./Version_1:/am
+    env_file:
+      - ./Version_1/.env
+    depends_on:
+      - dj_app
+    links:
+      - dj_app
+      - nginx
+
   db:
     image: postgres:15-alpine
-    container_name: nko_postgres
+    container_name: tg_bot_base
     restart: unless-stopped
     volumes:
       - postgres_data:/var/lib/postgresql/data/
@@ -33,59 +51,18 @@ services:
     expose:
       - 5432
     env_file:
-      - .env
+      - ./tg_bot_data/.env
 
   nginx:
     build: nginx
-    container_name: nko_nginx
+    container_name: tg_bot_nginx
     ports:
       - "80:80"
     depends_on:
-      - app
+      - dj_app
     volumes:
       - static:/am/static
       - media:/am/media
-
-  redis:
-    image: redis:alpine
-    hostname: redis
-
-  celery_worker:
-    build:
-      dockerfile: ./dockerfile
-    container_name: nko-celery_worker_1
-    hostname: worker_1
-    environment:
-      POSTGRES_DB: postgres
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-    env_file:
-      - .env
-    volumes:
-      - .:/am
-    command: celery -A NKO worker -l info
-    links:
-      - redis
-    depends_on:
-      - redis
-      - db
-
-  flower:
-    build:
-      dockerfile: ./dockerfile
-    hostname: nko-flower
-    command: celery -A NKO flower
-    volumes:
-      - .:/am
-    links:
-      - redis
-    depends_on:
-      - redis
-    ports:
-      - "5555:5555"
-
-
-
 
 volumes:
   postgres_data:
