@@ -2,17 +2,17 @@ import random
 
 import requests
 
-from Version_1.keyboards import inlinekeyboard
-from Version_1.main import dp, bot
+from keyboards import inlinekeyboard
+from main import dp, bot
 from aiogram.dispatcher import FSMContext
 from aiogram.types import Message, CallbackQuery
-from Version_1.keyboards import keyboard
+from keyboards import keyboard
+from config import BASE_URL
 from .states import Register
 
 users = {}
 players = {}
 play = False
-BASE_URL = 'http://127.0.0.1:8000/kmn'
 
 
 @dp.message_handler(commands=['start_kmn'])
