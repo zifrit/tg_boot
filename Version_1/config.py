@@ -4,3 +4,4 @@ from dotenv import load_dotenv
 load_dotenv()
 
 BOT_TOKEN = str(os.getenv('BOT_TOKEN'))
+BASE_URL = str(os.getenv('BASE_URL'))

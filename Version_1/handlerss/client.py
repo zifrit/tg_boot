@@ -1,18 +1,17 @@
 import random
 
-# from Version_1.keyboards.inlinekeyboard import create_day_actions_keyboard, create_days_keyboard, list_exist_game
+from keyboards.inlinekeyboard import list_exist_game
 from main import dp, bot
 from aiogram.types import Message, CallbackQuery
 from keyboards.keyboard import kb_menu, kb_some
 from keyboards import keyboard
+from config import BASE_URL
+
 import requests
 
 users = {}
 players = {}
 play = False
-
-# BASE_URL = 'http://127.0.0.1:8000/kmn/'
-BASE_URL = 'http://nginx/kmn'  # с докером
 
 
 def who_win(players: dict):
