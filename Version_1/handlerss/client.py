@@ -38,7 +38,7 @@ async def somecommand(message: Message):
     await message.answer(text='🔄', reply_markup=keyboard.kb_list_game)
 
 
-@dp.message_handler(commands=['games'])
+@dp.message_handler(commands=['kmn'])
 async def start_game(message: Message):
     await message.answer(text='🔄', reply_markup=keyboard.kb_list_game)
 

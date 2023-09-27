@@ -4,7 +4,7 @@ kb_menu = ReplyKeyboardMarkup(
     keyboard=[
         [
             KeyboardButton(text='/start'),
-            KeyboardButton(text='/games'),
+            KeyboardButton(text='/kmn'),
         ]
     ],
     resize_keyboard=True

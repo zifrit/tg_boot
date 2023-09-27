@@ -126,41 +126,47 @@ class EndGameKMN(ActionInRoom):
         user, room = self.get_data(request)
         if room:
             if user.tg_id == room.list_games.administrator.tg_id:
-                answer_1 = room.players[list(room.players.keys())[0]]
-                answer_2 = room.players[list(room.players.keys())[1]]
-                if (answer_1 == 'к' and answer_2 == 'н') or (answer_1 == 'н' and answer_2 == 'б') or (
-                        answer_1 == 'б' and answer_2 == 'к'):
-                    return Response({
-                        "status": True,
-                        'message': [
-                            [int(list(room.players.keys())[0]), 'Выиграл'],
-                            [int(list(room.players.keys())[1]), 'Проиграл']
-                        ],
-                        'room_id': room.list_games.pk
-                    })
-                elif (answer_2 == 'к' and answer_1 == 'н') or (answer_2 == 'н' and answer_1 == 'б') or (
-                        answer_2 == 'б' and answer_1 == 'к'):
-                    return Response({
-                        "status": True,
-                        'message': [
-                            [int(list(room.players.keys())[0]), 'Проиграл'],
-                            [int(list(room.players.keys())[1]), 'Выиграл']
-                        ],
-                        'room_id': room.list_games.pk
-                    })
-                elif answer_1 == answer_2:
-                    return Response({
-                        "status": 'D',
-                        'message': [
-                            [int(list(room.players.keys())[0]), 'Ничья'],
-                            [int(list(room.players.keys())[1]), 'Ничья']
-                        ],
-                        'room_id': room.list_games.pk
-                    })
+                if len(list(room.players.keys())) == 2:
+                    answer_1 = room.players[list(room.players.keys())[0]]
+                    answer_2 = room.players[list(room.players.keys())[1]]
+                    if (answer_1 == 'к' and answer_2 == 'н') or (answer_1 == 'н' and answer_2 == 'б') or (
+                            answer_1 == 'б' and answer_2 == 'к'):
+                        return Response({
+                            "status": True,
+                            'message': [
+                                [int(list(room.players.keys())[0]), 'Выиграл'],
+                                [int(list(room.players.keys())[1]), 'Проиграл']
+                            ],
+                            'room_id': room.list_games.pk
+                        })
+                    elif (answer_2 == 'к' and answer_1 == 'н') or (answer_2 == 'н' and answer_1 == 'б') or (
+                            answer_2 == 'б' and answer_1 == 'к'):
+                        return Response({
+                            "status": True,
+                            'message': [
+                                [int(list(room.players.keys())[0]), 'Проиграл'],
+                                [int(list(room.players.keys())[1]), 'Выиграл']
+                            ],
+                            'room_id': room.list_games.pk
+                        })
+                    elif answer_1 == answer_2:
+                        return Response({
+                            "status": 'D',
+                            'message': [
+                                [int(list(room.players.keys())[0]), 'Ничья'],
+                                [int(list(room.players.keys())[1]), 'Ничья']
+                            ],
+                            'room_id': room.list_games.pk
+                        })
+                    else:
+                        return Response({
+                            "status": False,
+                            'message': 'Не все выбрали вариант ответа'
+                        })
                 else:
                     return Response({
                         "status": False,
-                        'message': 'Ошибка'
+                        'message': 'В комнате не достаточно людей'
                     })
             else:
                 return Response({
